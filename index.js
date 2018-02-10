@@ -1,63 +1,78 @@
 'use strict';
 
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const http = require('http');
+const https = require('https');
+const parse5 = require('parse5');
 const parseLinkHeader = require('parse-link-header');
 const { resolve: urlResolve } = require('url');
 
-module.exports = async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
+function attributesArrayToObject(attributesArray) {
+  const attributesObject = {};
+
+  for (const { name, value } of attributesArray) {
+    attributesObject[name] = value;
+  }
+
+  return attributesObject;
+}
+
+module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
   const paymentUrls = {
     fromLinkHeaders: [],
     fromAnchors: [],
     fromLinks: []
   };
 
-  if (!allowHttp && !url.startsWith('https://')) {
-    return paymentUrls;
+  let get;
+
+  if (url.startsWith('https://')) {
+    get = https.get;
+  } else if (allowHttp) {
+    get = http.get;
+  } else {
+    return Promise.resolve(paymentUrls);
   }
 
-  // TODO: Should throws be handled here?
-  const res = await fetch(url);
+  return new Promise((resolve, reject) => {
+    if (!allowHttp && !url.startsWith('https://')) {
+      return resolve(paymentUrls);
+    }
 
-  (res.headers.get('link') || '').split(/,\s*/).forEach(link => {
-    const parsed = parseLinkHeader(link);
+    const parse = new parse5.SAXParser();
 
-    if (parsed.payment) {
-      paymentUrls.fromLinkHeaders.push({
-        uri: urlResolve(url, parsed.payment.url),
-        title: parsed.payment.title
+    parse.on('startTag', (name, attributesArray) => {
+      if (name !== 'link' && name !== 'a') {
+        return;
+      }
+
+      const { rel, title, href } = attributesArrayToObject(attributesArray);
+
+      if (rel === 'payment' && href) {
+        const uri = urlResolve(url, href);
+
+        if (name === 'link') {
+          paymentUrls.fromLinks.push({ uri, title });
+        } else {
+          paymentUrls.fromAnchors.push({ uri, title });
+        }
+      }
+    });
+
+    get(url, res => {
+      (res.headers.link || '').split(/,\s*/).forEach(link => {
+        const parsed = parseLinkHeader(link);
+
+        if (parsed && parsed.payment) {
+          paymentUrls.fromLinkHeaders.push({
+            uri: urlResolve(url, parsed.payment.url),
+            title: parsed.payment.title
+          });
+        }
       });
-    }
+
+      res.pipe(parse).once('end', () => resolve(paymentUrls));
+      parse.once('error', reject);
+      res.once('error', reject);
+    }).on('error', reject);
   });
-
-  const body = await res.text();
-  const $ = cheerio.load(body);
-
-  $('a').each((i, el) => {
-    const $el = $(el);
-
-    if ($el.attr('rel') === 'payment') {
-      const href = $el.attr('href');
-      const title = $el.attr('title') || $el.text().trim();
-
-      if (href) {
-        paymentUrls.fromAnchors.push({ uri: urlResolve(url, href), title });
-      }
-    }
-  });
-
-  $('link').each((i, el) => {
-    const $el = $(el);
-
-    if ($el.attr('rel') === 'payment') {
-      const href = $el.attr('href');
-      const title = $el.attr('title');
-
-      if (href) {
-        paymentUrls.fromLinks.push({ uri: urlResolve(url, href), title });
-      }
-    }
-  });
-
-  return paymentUrls;
 };

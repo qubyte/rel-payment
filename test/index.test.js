@@ -5,7 +5,6 @@ const http = require('http');
 const https = require('https');
 const { join: pathJoin } = require('path');
 const { readFileSync } = require('fs');
-const fetch = require('node-fetch');
 const relPayment = require('..');
 
 const safeKey = readFileSync(pathJoin(__dirname, 'safe-keypair', 'local.key'));
@@ -99,7 +98,26 @@ describe('rel-payment', () => {
       ],
       fromAnchors: [
         { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-anchor-b', title: 'Payment Anchor' }
+        { uri: 'https://example.com/payment-in-anchor-b', title: undefined }
+      ],
+      fromLinks: [
+        { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },
+        { uri: 'https://example.com/payment-in-link-b', title: 'title-b' }
+      ]
+    });
+  });
+
+  it.skip('returns payment URLs for HTTPS URLs', async () => {
+    const urls = await relPayment(`https://localhost:${safeHttpsPort}/headers-anchors-links`);
+
+    assert.deepEqual(urls, {
+      fromLinkHeaders: [
+        { uri: 'https://example.com/payment-in-header-a', title: 'title-a' },
+        { uri: 'https://example.com/payment-in-header-b', title: 'title-b' }
+      ],
+      fromAnchors: [
+        { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
+        { uri: 'https://example.com/payment-in-anchor-b', title: undefined }
       ],
       fromLinks: [
         { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },
@@ -112,7 +130,6 @@ describe('rel-payment', () => {
     try {
       await relPayment(`https://localhost:${unsafeHttpsPort}/headers-anchors-links`);
     } catch (e) {
-      assert.ok(e instanceof fetch.FetchError);
       return;
     }
 

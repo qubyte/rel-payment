@@ -4,7 +4,7 @@
   "description": "Discover a rel=\"payment\" donations URL given a URL for the containing page. ",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_EXTRA_CA_CERTS=./test/safe-keypair/localCA.cert mocha --recursive test",
+    "test": "NODE_EXTRA_CA_CERTS=./test/safe-keypair/local.cert mocha --recursive test",
     "lint": "eslint ."
   },
   "repository": {
@@ -24,12 +24,13 @@
   },
   "homepage": "https://github.com/qubyte/rel-payment#readme",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
     "eslint": "^4.17.0",
     "eslint-config-qubyte": "^1.1.0",
     "mocha": "^5.0.0",
-    "node-fetch": "^2.0.0",
-    "parse-link-header": "^1.0.1"
+    "parse-link-header": "^1.0.1",
+    "parse5": "^4.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "node-fetch": "^2.0.0"
+  }
 }
