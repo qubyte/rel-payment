@@ -1,5 +1,7 @@
 # rel-payment
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/qubyte/rel-payment.svg)](https://greenkeeper.io/)
+
 Discover [rel="payment"](http://microformats.org/wiki/rel-payment) donation
 URIs within given a URL for a page.
 
