@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  check:
+  lint:
     docker:
       - image: circleci/node:8.9
     steps:
@@ -9,8 +9,8 @@ jobs:
           name: npm install
           command: npm install
       - run:
-          name: npm run check
-          command: npm run check
+          name: npm run lint
+          command: npm run lint
   test:
     docker:
       - image: circleci/node:8.9
@@ -24,7 +24,7 @@ jobs:
           command: npm test
 workflows:
   version: 2
-  check:
+  lint:
     jobs:
       - lint
   test:
