@@ -35,8 +35,7 @@ where each object looks like:
 }
 ```
 
-The title field is populated by the title attribute of the tag. When no title
-is available, the text content will be used for anchor tags.
+The title field is populated by the title attribute of the tag.
 
 ## HTTP
 
