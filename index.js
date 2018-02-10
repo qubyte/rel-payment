@@ -62,7 +62,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
       (res.headers.link || '').split(/,\s*/).forEach(link => {
         const parsed = parseLinkHeader(link);
 
-        if (parsed.payment) {
+        if (parsed && parsed.payment) {
           paymentUrls.fromLinkHeaders.push({
             uri: urlResolve(url, parsed.payment.url),
             title: parsed.payment.title
