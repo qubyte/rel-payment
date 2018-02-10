@@ -23,7 +23,10 @@ function handleRequest(req, res) {
   case '/headers-anchors-links':
     res.writeHead(200, {
       'Content-Type': 'text/html',
-      Link: '<https://example.com/payment-in-header-a>; rel="payment"; title="title-a", <https://example.com/payment-in-header-b>; rel="payment"; title="title-b"'
+      Link: [
+        '<https://example.com/payment-in-header-a>; rel="payment"; title="title-a"',
+        '<https://example.com/payment-in-header-b>; rel="payment"; title="title-b"'
+      ].join(', ')
     });
     res.end(`
       <!doctype html>
