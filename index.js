@@ -1,7 +1,6 @@
 'use strict';
 
-const http = require('http');
-const https = require('https');
+const fetch = require('node-fetch');
 const parse5 = require('parse5');
 const parseLinkHeader = require('parse-link-header');
 const { resolve: urlResolve } = require('url');
@@ -23,56 +22,62 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     fromLinks: []
   };
 
-  let get;
-
-  if (url.startsWith('https://')) {
-    get = https.get;
-  } else if (allowHttp) {
-    get = http.get;
-  } else {
+  if (url.trim().indexOf('http://') === 0 && !allowHttp) {
     return Promise.resolve(paymentUrls);
   }
 
-  return new Promise((resolve, reject) => {
-    if (!allowHttp && !url.startsWith('https://')) {
-      return resolve(paymentUrls);
+  const parse = new parse5.SAXParser();
+
+  parse.on('startTag', (name, attributesArray) => {
+    if (name !== 'link' && name !== 'a') {
+      return;
     }
 
-    const parse = new parse5.SAXParser();
+    const { rel, title, href } = attributesArrayToObject(attributesArray);
 
-    parse.on('startTag', (name, attributesArray) => {
-      if (name !== 'link' && name !== 'a') {
-        return;
+    if (rel === 'payment' && href) {
+      const uri = urlResolve(url, href);
+
+      if (name === 'link') {
+        paymentUrls.fromLinks.push({ uri, title });
+      } else {
+        paymentUrls.fromAnchors.push({ uri, title });
       }
+    }
+  });
 
-      const { rel, title, href } = attributesArrayToObject(attributesArray);
+  return fetch(url).then(res => {
+    (res.headers.get('link') || '').split(/,\s*/).forEach(link => {
+      const parsed = parseLinkHeader(link);
 
-      if (rel === 'payment' && href) {
-        const uri = urlResolve(url, href);
-
-        if (name === 'link') {
-          paymentUrls.fromLinks.push({ uri, title });
-        } else {
-          paymentUrls.fromAnchors.push({ uri, title });
-        }
+      if (parsed && parsed.payment) {
+        paymentUrls.fromLinkHeaders.push({
+          uri: urlResolve(url, parsed.payment.url),
+          title: parsed.payment.title
+        });
       }
     });
 
-    get(url, res => {
-      (res.headers.link || '').split(/,\s*/).forEach(link => {
-        const parsed = parseLinkHeader(link);
+    return new Promise((resolve, reject) => {
+      function onEnd() {
+        removeListeners();
+        resolve(paymentUrls);
+      }
 
-        if (parsed && parsed.payment) {
-          paymentUrls.fromLinkHeaders.push({
-            uri: urlResolve(url, parsed.payment.url),
-            title: parsed.payment.title
-          });
-        }
-      });
+      function onError(error) {
+        removeListeners();
+        reject(error);
+      }
 
-      res.pipe(parse).once('end', () => resolve(paymentUrls));
-      parse.once('error', reject);
-      res.once('error', reject);
-    }).on('error', reject);
+      function removeListeners() {
+        parse.removeListener('end', onEnd);
+        parse.removeListener('error', onError);
+        res.body.removeListener('error', onError);
+      }
+
+      res.body.pipe(parse).on('end', onEnd);
+      parse.on('error', onError);
+      res.body.on('error', onError);
+    });
   });
 };
