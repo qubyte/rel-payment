@@ -78,14 +78,40 @@ describe('rel-payment', () => {
     assert.equal(typeof relPayment, 'function');
   });
 
-  it('returns no payment URLs for HTTP URLs by default', async () => {
-    const urls = await relPayment(`http://localhost:${httpPort}/headers-anchors-links`);
+  it('throw an error for HTTP URLs by default', async () => {
+    try {
+      await relPayment(`http://localhost:${httpPort}/headers-anchors-links`);
+    } catch (e) {
+      assert.ok(e instanceof Error);
+      assert.equal(e.message, 'Invalid URL protocol: http:');
+      return;
+    }
 
-    assert.deepEqual(urls, {
-      fromLinkHeaders: [],
-      fromAnchors: [],
-      fromLinks: []
-    });
+    throw new Error('Should have thrown');
+  });
+
+  it('throws an error for URLs with no protocol by default', async () => {
+    try {
+      await relPayment(`//localhost:${httpPort}/headers-anchors-links`);
+    } catch (e) {
+      assert.ok(e instanceof Error);
+      assert.equal(e.message, 'Invalid URL protocol: null');
+      return;
+    }
+
+    throw new Error('Should have thrown');
+  });
+
+  it('throws an error when an unsupported protocol is used', async () => {
+    try {
+      await relPayment('ftp://something');
+    } catch (e) {
+      assert.ok(e instanceof Error);
+      assert.equal(e.message, 'Invalid URL protocol: ftp:');
+      return;
+    }
+
+    throw new Error('Should have thrown');
   });
 
   it('returns payment URLs for HTTP URLs when configured to', async () => {
