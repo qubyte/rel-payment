@@ -98,7 +98,7 @@ describe('rel-payment', () => {
       ],
       fromAnchors: [
         { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-anchor-b', title: undefined }
+        { uri: 'https://example.com/payment-in-anchor-b', title: '' }
       ],
       fromLinks: [
         { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },
@@ -117,7 +117,7 @@ describe('rel-payment', () => {
       ],
       fromAnchors: [
         { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-anchor-b', title: undefined }
+        { uri: 'https://example.com/payment-in-anchor-b', title: '' }
       ],
       fromLinks: [
         { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },

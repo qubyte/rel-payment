@@ -33,7 +33,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
       return;
     }
 
-    const { rel, title, href } = attributesArrayToObject(attributesArray);
+    const { rel, title = '', href } = attributesArrayToObject(attributesArray);
 
     if (rel === 'payment' && href) {
       const uri = urlResolve(url, href);
