@@ -11,7 +11,7 @@ URIs within given a URL for a page.
 const relPayment = require('rel-payment');
 
 relPayment.then(
-  paymentUris => console.log(paymentUrls),
+  paymentUris => console.log(paymentUris),
   err => console.error(err)
 );
 ```

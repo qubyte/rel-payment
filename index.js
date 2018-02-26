@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 const parse5 = require('parse5');
 const parseLinkHeader = require('parse-link-header');
-const { resolve: urlResolve } = require('url');
+const { resolve: urlResolve, parse: urlParse } = require('url');
 
 function attributesArrayToObject(attributesArray) {
   const attributesObject = {};
@@ -22,8 +22,16 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     fromLinks: []
   };
 
-  if (url.trim().indexOf('http://') === 0 && !allowHttp) {
-    return Promise.resolve(paymentUrls);
+  const { protocol, href } = urlParse(url);
+
+  const allowedProtocols = ['https:'];
+
+  if (allowHttp) {
+    allowedProtocols.push('http:');
+  }
+
+  if (!allowedProtocols.includes(protocol)) {
+    throw new Error(`Invalid URL protocol: ${protocol}`);
   }
 
   const parse = new parse5.SAXParser();
@@ -33,7 +41,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
       return;
     }
 
-    const { rel, title, href } = attributesArrayToObject(attributesArray);
+    const { rel, title = '', href } = attributesArrayToObject(attributesArray);
 
     if (rel === 'payment' && href) {
       const uri = urlResolve(url, href);
@@ -46,7 +54,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     }
   });
 
-  return fetch(url).then(res => {
+  return fetch(href).then(res => {
     (res.headers.get('link') || '').split(/,\s*/).forEach(link => {
       const parsed = parseLinkHeader(link);
 
