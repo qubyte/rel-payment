@@ -26,7 +26,7 @@
   "dependencies": {
     "node-fetch": "^2.0.0",
     "parse-link-header": "^1.0.1",
-    "parse5": "^4.0.0"
+    "parse5": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^4.18.1",
