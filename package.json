@@ -29,7 +29,7 @@
     "parse5": "^4.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.18.1",
+    "eslint": "^5.0.0",
     "eslint-config-qubyte": "^2.0.0",
     "mocha": "^5.0.1"
   }
