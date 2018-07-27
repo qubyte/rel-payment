@@ -1,7 +1,7 @@
 'use strict';
 
 const fetch = require('node-fetch');
-const parse5 = require('parse5');
+const SAXParser = require('parse5-sax-parser');
 const parseLinkHeader = require('parse-link-header');
 const { resolve: urlResolve, parse: urlParse } = require('url');
 
@@ -34,19 +34,19 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     throw new Error(`Invalid URL protocol: ${protocol}`);
   }
 
-  const parse = new parse5.SAXParser();
+  const parse = new SAXParser();
 
-  parse.on('startTag', (name, attributesArray) => {
-    if (name !== 'link' && name !== 'a') {
+  parse.on('startTag', ({ tagName, attrs }) => {
+    if (tagName !== 'link' && tagName !== 'a') {
       return;
     }
 
-    const { rel, title = '', href } = attributesArrayToObject(attributesArray);
+    const { rel, title = '', href } = attributesArrayToObject(attrs);
 
     if (rel === 'payment' && href) {
       const uri = urlResolve(url, href);
 
-      if (name === 'link') {
+      if (tagName === 'link') {
         paymentUrls.fromLinks.push({ uri, title });
       } else {
         paymentUrls.fromAnchors.push({ uri, title });
