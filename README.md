@@ -10,7 +10,7 @@ URIs within given a URL for a page.
 ```javascript
 const relPayment = require('rel-payment');
 
-relPayment.then(
+relPayment('https://qubyte.codes').then(
   paymentUris => console.log(paymentUris),
   err => console.error(err)
 );
@@ -26,7 +26,7 @@ where `paymentUris` looks like:
 }
 ```
 
-where each object looks like:
+and where each object looks like:
 
 ```javascript
 {
