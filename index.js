@@ -3,7 +3,7 @@
 const fetch = require('node-fetch');
 const SAXParser = require('parse5-sax-parser');
 const parseLinkHeader = require('parse-link-header');
-const { resolve: urlResolve, parse: urlParse } = require('url');
+const { resolve: urlResolve, URL } = require('url');
 
 function attributesArrayToObject(attributesArray) {
   const attributesObject = {};
@@ -22,7 +22,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     fromLinks: []
   };
 
-  const { protocol, href } = urlParse(url);
+  const { protocol, href: targetUrl } = new URL(url);
 
   const allowedProtocols = ['https:'];
 
@@ -44,23 +44,23 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
     const { rel, title = '', href } = attributesArrayToObject(attrs);
 
     if (rel === 'payment' && href) {
-      const uri = urlResolve(url, href);
+      const url = new URL(urlResolve(targetUrl, href));
 
       if (tagName === 'link') {
-        paymentUrls.fromLinks.push({ uri, title });
+        paymentUrls.fromLinks.push({ url, title });
       } else {
-        paymentUrls.fromAnchors.push({ uri, title });
+        paymentUrls.fromAnchors.push({ url, title });
       }
     }
   });
 
-  return fetch(href).then(res => {
+  return fetch(targetUrl).then(res => {
     (res.headers.get('link') || '').split(/,\s*/).forEach(link => {
       const parsed = parseLinkHeader(link);
 
       if (parsed && parsed.payment) {
         paymentUrls.fromLinkHeaders.push({
-          uri: urlResolve(url, parsed.payment.url),
+          url: new URL(urlResolve(targetUrl, parsed.payment.url)),
           title: parsed.payment.title
         });
       }

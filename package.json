@@ -7,6 +7,9 @@
     "test": "NODE_EXTRA_CA_CERTS=./test/safe-keypair/local.cert mocha --recursive test",
     "lint": "eslint ."
   },
+  "engines": {
+    "node" : ">=7.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/qubyte/rel-payment.git"

@@ -1,15 +1,22 @@
 export = discoverRelPaymentUrl;
 
 declare function discoverRelPaymentUrl(
-  url: string,
+  url: URL | string,
   options?: discoverRelPaymentUrl.Options
-): Promise<discoverRelPaymentUrl.PaymentUrl[]>;
+): Promise<discoverRelPaymentUrl.Results>;
 
 declare namespace discoverRelPaymentUrl {
   export interface PaymentUrl {
-    uri: string;
+    url: URL;
     title: string;
   }
+
+  export interface Results {
+    fromLinkHeaders: PaymentUrl[];
+    fromAnchors: PaymentUrl[];
+    fromLinks: PaymentUrl[];
+  }
+
   export interface Options {
     allowHttp?: Boolean;
   }

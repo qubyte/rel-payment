@@ -3,6 +3,7 @@
 const assert = require('assert');
 const http = require('http');
 const https = require('https');
+const { URL } = require('url');
 const { join: pathJoin } = require('path');
 const { readFileSync } = require('fs');
 const relPayment = require('..');
@@ -95,7 +96,7 @@ describe('rel-payment', () => {
       await relPayment(`//localhost:${httpPort}/headers-anchors-links`);
     } catch (e) {
       assert.ok(e instanceof Error);
-      assert.equal(e.message, 'Invalid URL protocol: null');
+      assert.equal(e.code, 'ERR_INVALID_URL');
       return;
     }
 
@@ -114,21 +115,41 @@ describe('rel-payment', () => {
     throw new Error('Should have thrown');
   });
 
-  it('returns payment URLs for HTTP URLs when configured to', async () => {
+  it('returns payment URLs for HTTP string URLs when configured to', async () => {
     const urls = await relPayment(`http://localhost:${httpPort}/headers-anchors-links`, { allowHttp: true });
 
-    assert.deepEqual(urls, {
+    assert.deepStrictEqual(urls, {
       fromLinkHeaders: [
-        { uri: 'https://example.com/payment-in-header-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-header-b', title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
       ],
       fromAnchors: [
-        { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-anchor-b', title: '' }
+        { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-anchor-b'), title: '' }
       ],
       fromLinks: [
-        { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-link-b', title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-link-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-link-b'), title: 'title-b' }
+      ]
+    });
+  });
+
+  it('returns payment URLs for HTTP object URLs when configured to', async () => {
+    const url = new URL(`http://localhost:${httpPort}/headers-anchors-links`);
+    const urls = await relPayment(url, { allowHttp: true });
+
+    assert.deepStrictEqual(urls, {
+      fromLinkHeaders: [
+        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
+      ],
+      fromAnchors: [
+        { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-anchor-b'), title: '' }
+      ],
+      fromLinks: [
+        { url: new URL('https://example.com/payment-in-link-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-link-b'), title: 'title-b' }
       ]
     });
   });
@@ -136,18 +157,18 @@ describe('rel-payment', () => {
   it.skip('returns payment URLs for HTTPS URLs', async () => {
     const urls = await relPayment(`https://localhost:${safeHttpsPort}/headers-anchors-links`);
 
-    assert.deepEqual(urls, {
+    assert.deepStrictEqual(urls, {
       fromLinkHeaders: [
-        { uri: 'https://example.com/payment-in-header-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-header-b', title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
       ],
       fromAnchors: [
-        { uri: 'https://example.com/payment-in-anchor-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-anchor-b', title: '' }
+        { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-anchor-b'), title: '' }
       ],
       fromLinks: [
-        { uri: 'https://example.com/payment-in-link-a', title: 'title-a' },
-        { uri: 'https://example.com/payment-in-link-b', title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-link-a'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-link-b'), title: 'title-b' }
       ]
     });
   });
