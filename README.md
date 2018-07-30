@@ -3,13 +3,14 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/qubyte/rel-payment.svg)](https://greenkeeper.io/)
 
 Discover [rel="payment"](http://microformats.org/wiki/rel-payment) donation
-URIs within given a URL for a page.
+URIs given a URL for a page which may contain them.
 
 ## Usage
 
 ```javascript
 const relPayment = require('rel-payment');
 
+// The url parameter may also be a WHATWG URL object.
 relPayment('https://qubyte.codes').then(
   paymentUris => console.log(paymentUris),
   err => console.error(err)
@@ -30,7 +31,7 @@ and where each object looks like:
 
 ```javascript
 {
-  uri: 'https://example.com/payment', // Absolute URI for payments.
+  url: new URL('https://example.com/payment'), // Absolute WHATWG URL object for payments.
   title: 'Some info about the payment.'
 }
 ```
