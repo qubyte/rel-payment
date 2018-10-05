@@ -83,6 +83,7 @@ module.exports = function discoverRelPaymentUrl(url, { allowHttp = false } = {})
         res.body.removeListener('error', onError);
       }
 
+      res.body.setEncoding('utf8');
       res.body.pipe(parse).on('end', onEnd);
       parse.on('error', onError);
       res.body.on('error', onError);
