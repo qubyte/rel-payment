@@ -27,13 +27,13 @@
   },
   "homepage": "https://github.com/qubyte/rel-payment#readme",
   "dependencies": {
-    "node-fetch": "^2.2.0",
+    "node-fetch": "^2.6.0",
     "parse-link-header": "^1.0.1",
     "parse5-sax-parser": "^5.1.0"
   },
   "devDependencies": {
-    "eslint": "^5.6.1",
+    "eslint": "^5.16.0",
     "eslint-config-qubyte": "^2.0.0",
-    "mocha": "^6.0.0"
+    "mocha": "^6.1.4"
   }
 }
