@@ -1,6 +1,6 @@
 {
   "name": "rel-payment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discover a rel=\"payment\" donations URL given a URL for the containing page. ",
   "main": "index.js",
   "scripts": {
