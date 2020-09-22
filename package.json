@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/qubyte/rel-payment#readme",
   "dependencies": {
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "parse-link-header": "^1.0.1",
     "parse5-sax-parser": "^6.0.1"
   },
