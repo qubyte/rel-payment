@@ -74,4 +74,4 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
   await pipeline(res.body, parse);
 
   return paymentUrls;
-};
+}
