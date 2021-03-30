@@ -1,12 +1,10 @@
-'use strict';
+import fetch from 'node-fetch';
+import SAXParser from 'parse5-sax-parser';
+import parseLinkHeader from 'parse-link-header';
+import { promisify } from 'util';
+import { pipeline as pipelinecb } from 'stream';
 
-const fetch = require('node-fetch');
-const SAXParser = require('parse5-sax-parser');
-const parseLinkHeader = require('parse-link-header');
-const { promisify } = require('util');
-const stream = require('stream');
-
-const pipeline = promisify(stream.pipeline);
+const pipeline = promisify(pipelinecb);
 
 function attributesArrayToObject(attributesArray) {
   const attributesObject = {};
@@ -18,7 +16,7 @@ function attributesArrayToObject(attributesArray) {
   return attributesObject;
 }
 
-module.exports = async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
+export default async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
   const paymentUrls = {
     fromLinkHeaders: [],
     fromAnchors: [],
@@ -76,4 +74,4 @@ module.exports = async function discoverRelPaymentUrl(url, { allowHttp = false }
   await pipeline(res.body, parse);
 
   return paymentUrls;
-};
+}

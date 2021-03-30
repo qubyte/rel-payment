@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v3.0.0
+
+- Now an ES module.
+
 ## v2.0.0
 
 - Drops support for Node 10.

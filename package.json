@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Discover a rel=\"payment\" donations URL given a URL for the containing page. ",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "NODE_EXTRA_CA_CERTS=./test/safe-keypair/local.cert mocha --recursive test",
     "lint": "eslint ."
@@ -19,10 +20,6 @@
   ],
   "author": "Mark Stanley Everitt",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/qubyte/rel-payment/issues"
-  },
-  "homepage": "https://github.com/qubyte/rel-payment#readme",
   "dependencies": {
     "node-fetch": "^2.6.1",
     "parse-link-header": "^1.0.1",
