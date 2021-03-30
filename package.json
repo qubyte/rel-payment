@@ -8,12 +8,9 @@
     "lint": "eslint ."
   },
   "engines": {
-    "node": ">=7.0.0"
+    "node": ">=12"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qubyte/rel-payment.git"
-  },
+  "repository": "github:qubyte/rel-payment",
   "keywords": [
     "payment",
     "donations",
@@ -32,8 +29,8 @@
     "parse5-sax-parser": "^6.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.7.0",
+    "eslint": "^7.23.0",
     "eslint-config-qubyte": "^3.0.0",
-    "mocha": "^8.1.1"
+    "mocha": "^8.3.2"
   }
 }
