@@ -1,17 +1,13 @@
-'use strict';
+import assert from 'assert';
+import http from 'http';
+import https from 'https';
+import { readFileSync } from 'fs';
+import relPayment from '../index.js';
 
-const assert = require('assert');
-const http = require('http');
-const https = require('https');
-const { URL } = require('url');
-const { join: pathJoin } = require('path');
-const { readFileSync } = require('fs');
-const relPayment = require('..');
-
-const safeKey = readFileSync(pathJoin(__dirname, 'safe-keypair', 'local.key'));
-const safeCert = readFileSync(pathJoin(__dirname, 'safe-keypair', 'local.cert'));
-const unsafeKey = readFileSync(pathJoin(__dirname, 'unsafe-keypair', 'local.key'));
-const unsafeCert = readFileSync(pathJoin(__dirname, 'unsafe-keypair', 'local.cert'));
+const safeKey = readFileSync(new URL('./safe-keypair/local.key', import.meta.url));
+const safeCert = readFileSync(new URL('./safe-keypair/local.cert', import.meta.url));
+const unsafeKey = readFileSync(new URL('./unsafe-keypair/local.key', import.meta.url));
+const unsafeCert = readFileSync(new URL('./unsafe-keypair/local.cert', import.meta.url));
 
 function handleRequest(req, res) {
   switch (req.url) {

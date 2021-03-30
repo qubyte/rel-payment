@@ -6,7 +6,7 @@ URIs given a URL for a page which may contain them.
 ## Usage
 
 ```javascript
-const relPayment = require('rel-payment');
+import relPayment from 'rel-payment';
 
 // The url parameter may also be a WHATWG URL object.
 relPayment('https://qubyte.codes').then(
