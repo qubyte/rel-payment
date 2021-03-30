@@ -8,12 +8,9 @@
     "lint": "eslint ."
   },
   "engines": {
-    "node": ">=7.0.0"
+    "node": ">=12"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qubyte/rel-payment.git"
-  },
+  "repository": "github:qubyte/rel-payment",
   "keywords": [
     "payment",
     "donations",
