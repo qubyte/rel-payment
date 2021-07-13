@@ -26,8 +26,8 @@
     "parse5-sax-parser": "^6.0.1"
   },
   "devDependencies": {
-    "eslint": "^7.23.0",
-    "eslint-config-qubyte": "^3.0.0",
-    "mocha": "^8.3.2"
+    "eslint": "^7.30.0",
+    "eslint-config-qubyte": "^4.1.0",
+    "mocha": "^9.0.2"
   }
 }
