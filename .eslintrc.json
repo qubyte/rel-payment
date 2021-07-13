@@ -1,10 +1,6 @@
 {
-  "extends": "qubyte/ES2019",
+  "extends": "qubyte/ES2020-module",
   "env": {
     "node": true
-  },
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2021
   }
 }
