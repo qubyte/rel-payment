@@ -4,6 +4,9 @@
   "description": "Discover a rel=\"payment\" donations URL given a URL for the containing page. ",
   "main": "index.js",
   "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
   "scripts": {
     "test": "NODE_EXTRA_CA_CERTS=./test/safe-keypair/local.cert mocha --recursive test",
     "lint": "eslint ."
