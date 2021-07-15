@@ -2,7 +2,7 @@ import assert from 'assert';
 import http from 'http';
 import https from 'https';
 import { readFileSync } from 'fs';
-import relPayment from '../index.js';
+import relPayment from 'rel-payment';
 
 const safeKey = readFileSync(new URL('./safe-keypair/local.key', import.meta.url));
 const safeCert = readFileSync(new URL('./safe-keypair/local.cert', import.meta.url));
