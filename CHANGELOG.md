@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.0.0
+
+- Drops support for Node 12.
+
 ## v3.0.0
 
 - Now an ES module.

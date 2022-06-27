@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import SAXParser from 'parse5-sax-parser';
+import { SAXParser } from 'parse5-sax-parser';
 import parseLinkHeader from 'parse-link-header';
 import { promisify } from 'util';
 import { pipeline as pipelinecb } from 'stream';
