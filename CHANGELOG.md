@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v4.1.0
+
+- Adds support for grabbing the
+  [title](https://datatracker.ietf.org/doc/html/rfc8288#section-3.4.1) as an
+  [extended attribute](https://datatracker.ietf.org/doc/html/rfc8187#section-3.2.1)
+  from headers.
+- Lessens the node_modules footprint a little.
+
 ## v4.0.0
 
 - Drops support for Node 12.

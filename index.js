@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
+import LinkHeader from 'http-link-header';
 import { SAXParser } from 'parse5-sax-parser';
-import parseLinkHeader from 'parse-link-header';
 import { promisify } from 'util';
 import { pipeline as pipelinecb } from 'stream';
 
@@ -14,6 +14,13 @@ function attributesArrayToObject(attributesArray) {
   }
 
   return attributesObject;
+}
+
+// Support extended attributes when they're successfully decoded by LinkHeader.
+// Otherwise fall back to the title attribute. A null encoding indicates the
+// header was properly decoded.
+function pickTitle(rel) {
+  return rel['title*'] && rel['title*'].encoding === null && rel['title*'].value || rel.title;
 }
 
 export default async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
@@ -56,18 +63,11 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
   });
 
   const res = await fetch(targetUrl);
-  const links = (res.headers.get('link') || '').split(/,\s*/);
 
-  for (const link of links) {
-    const parsed = parseLinkHeader(link);
-
-    if (parsed && parsed.payment) {
-      paymentUrls.fromLinkHeaders.push({
-        url: new URL(parsed.payment.url, targetUrl),
-        title: parsed.payment.title
-      });
-    }
-  }
+  paymentUrls.fromLinkHeaders = LinkHeader
+    .parse(res.headers.get('link') || '')
+    .rel('payment')
+    .map(rel => ({ url: new URL(rel.uri, targetUrl), title: pickTitle(rel) }));
 
   res.body.setEncoding('utf8');
 
