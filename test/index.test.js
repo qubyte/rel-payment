@@ -20,8 +20,11 @@ function handleRequest(req, res) {
     res.writeHead(200, {
       'Content-Type': 'text/html',
       Link: [
-        '<https://example.com/payment-in-header-a>; rel="payment"; title="title-a"',
-        '<https://example.com/payment-in-header-b>; rel="payment"; title="title-b"'
+        '<https://example.com/payment-in-header-simple>; rel="payment"; title="title-a"',
+        '<https://example.com/payment-in-header-unquoted-rel>; rel=payment; title="title-b"',
+        '<https://example.com/payment-in-header-extended-attribute-title>; rel="payment"; title*="UTF-8\'en\'%74%69%74%6C%65%2D%63"',
+        '</path-part-in-header-only>; rel="payment"; title="title-d"',
+        '<https://example.com/payment-in-header-extended-attribute-title-fallback-undecodable>; rel="payment"; title="title-e"; title*="BLAH\'\'%74%69%74%6C%65%2D%63"' // eslint-disable-line max-len
       ].join(', ')
     });
     res.end(`
@@ -116,8 +119,11 @@ describe('rel-payment', () => {
 
     assert.deepStrictEqual(urls, {
       fromLinkHeaders: [
-        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
-        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title'), title: 'title-c' },
+        { url: new URL('http://localhost:3000/path-part-in-header-only'), title: 'title-d' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title-fallback-undecodable'), title: 'title-e' }
       ],
       fromAnchors: [
         { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
@@ -136,8 +142,11 @@ describe('rel-payment', () => {
 
     assert.deepStrictEqual(urls, {
       fromLinkHeaders: [
-        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
-        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title'), title: 'title-c' },
+        { url: new URL('http://localhost:3000/path-part-in-header-only'), title: 'title-d' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title-fallback-undecodable'), title: 'title-e' }
       ],
       fromAnchors: [
         { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
@@ -155,8 +164,11 @@ describe('rel-payment', () => {
 
     assert.deepStrictEqual(urls, {
       fromLinkHeaders: [
-        { url: new URL('https://example.com/payment-in-header-a'), title: 'title-a' },
-        { url: new URL('https://example.com/payment-in-header-b'), title: 'title-b' }
+        { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
+        { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title'), title: 'title-c' },
+        { url: new URL('http://localhost:3000/path-part-in-header-only'), title: 'title-d' },
+        { url: new URL('https://example.com/payment-in-header-extended-attribute-title-fallback-undecodable'), title: 'title-e' }
       ],
       fromAnchors: [
         { url: new URL('https://example.com/payment-in-anchor-a'), title: 'title-a' },
