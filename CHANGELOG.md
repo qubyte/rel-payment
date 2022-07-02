@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v4.1.1
+
+- Unused files no longer make it to the package on npm, lowering download size.
+
 ## v4.1.0
 
 - Adds support for grabbing the
