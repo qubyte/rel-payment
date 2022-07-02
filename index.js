@@ -69,6 +69,10 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
     .rel('payment')
     .map(rel => ({ url: new URL(rel.uri, targetUrl), title: pickTitle(rel) }));
 
+  if (!res.body) {
+    return paymentUrls;
+  }
+
   res.body.setEncoding('utf8');
 
   await pipeline(res.body, parse);
