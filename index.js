@@ -13,10 +13,14 @@ function pickTitle(rel) {
   return rel['title*'] && rel['title*'].encoding === null && rel['title*'].value || rel.title;
 }
 
+/** @param {URL|string} url */
 export default async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
   const paymentUrls = {
+    /** @type {{ url: URL, title: string }[]} */
     fromLinkHeaders: [],
+    /** @type {{ url: URL, title: string }[]} */
     fromAnchors: [],
+    /** @type {{ url: URL, title: string }[]} */
     fromLinks: []
   };
 
