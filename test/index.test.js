@@ -16,6 +16,10 @@ function handleRequest(req, res) {
     res.end('<!doctype html><html></html>');
     return;
 
+  case '/no-body':
+    res.writeHead(204).end();
+    return;
+
   case '/headers-anchors-links':
     res.writeHead(200, {
       'Content-Type': 'text/html',
@@ -112,6 +116,10 @@ describe('rel-payment', () => {
     }
 
     throw new Error('Should have thrown');
+  });
+
+  it('does not throw when a request for a target responds with no body', async () => {
+    await relPayment(`http://localhost:${httpPort}/no-body`, { allowHttp: true });
   });
 
   it('returns payment URLs for HTTP string URLs when configured to', async () => {

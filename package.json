@@ -3,6 +3,7 @@
   "version": "4.1.1",
   "description": "Discover a rel=\"payment\" donations URL given a URL for the containing page. ",
   "main": "index.js",
+  "types": "./index.d.ts",
   "type": "module",
   "exports": {
     ".": "./index.js"
@@ -14,7 +15,7 @@
   "engines": {
     "node": ">=14"
   },
-  "files": [],
+  "files": ["index.d.ts"],
   "repository": "github:qubyte/rel-payment",
   "keywords": [
     "payment",
