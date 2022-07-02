@@ -1,4 +1,4 @@
-export = discoverRelPaymentUrl;
+export default discoverRelPaymentUrl;
 
 declare function discoverRelPaymentUrl(
   url: URL | string,
