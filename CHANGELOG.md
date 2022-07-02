@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v4.1.2
+
+- Fixes and adds back TypeScript declaration file.
+- Adds a check for null body when handling responses. This is a precaution since
+  node-fetch doesn't appear to produce them.
+
 ## v4.1.1
 
 - Unused files no longer make it to the package on npm, lowering download size.
