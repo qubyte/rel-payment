@@ -6,16 +6,6 @@ import { pipeline as pipelinecb } from 'stream';
 
 const pipeline = promisify(pipelinecb);
 
-function attributesArrayToObject(attributesArray) {
-  const attributesObject = {};
-
-  for (const { name, value } of attributesArray) {
-    attributesObject[name] = value;
-  }
-
-  return attributesObject;
-}
-
 // Support extended attributes when they're successfully decoded by LinkHeader.
 // Otherwise fall back to the title attribute. A null encoding indicates the
 // header was properly decoded.
@@ -49,7 +39,14 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
       return;
     }
 
-    const { rel, title = '', href } = attributesArrayToObject(attrs);
+    /** @type Record<string, string|undefined> */
+    const attributesObject = {};
+
+    for (const { name, value } of attrs) {
+      attributesObject[name] = value;
+    }
+
+    const { rel, title = '', href } = attributesObject;
 
     if (rel === 'payment' && href) {
       const url = new URL(href, targetUrl);
