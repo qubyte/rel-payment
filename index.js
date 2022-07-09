@@ -6,13 +6,6 @@ import { pipeline as pipelinecb } from 'stream';
 
 const pipeline = promisify(pipelinecb);
 
-// Support extended attributes when they're successfully decoded by LinkHeader.
-// Otherwise fall back to the title attribute. A null encoding indicates the
-// header was properly decoded.
-function pickTitle(rel) {
-  return rel['title*'] && rel['title*'].encoding === null && rel['title*'].value || rel.title;
-}
-
 export default async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
   const paymentUrls = {
     fromLinkHeaders: [],
@@ -20,16 +13,11 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
     fromLinks: []
   };
 
-  const targetUrl = new URL(url);
+  const { protocol, href: targetHref } = new URL(url);
+  const allowed = protocol === 'https:' || (allowHttp && protocol === 'http:');
 
-  const allowedProtocols = ['https:'];
-
-  if (allowHttp) {
-    allowedProtocols.push('http:');
-  }
-
-  if (!allowedProtocols.includes(targetUrl.protocol)) {
-    throw new Error(`Invalid URL protocol: ${targetUrl.protocol}`);
+  if (!allowed) {
+    throw new Error(`Invalid URL protocol: ${protocol}`);
   }
 
   const parse = new SAXParser();
@@ -42,7 +30,7 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
     const { rel, title = '', href } = Object.fromEntries(attrs.map(({ name, value }) => [name, value]));
 
     if (rel === 'payment' && href) {
-      const url = new URL(href, targetUrl);
+      const url = new URL(href, targetHref);
 
       if (tagName === 'link') {
         paymentUrls.fromLinks.push({ url, title });
@@ -52,20 +40,22 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
     }
   });
 
-  const res = await fetch(targetUrl);
+  const res = await fetch(targetHref);
 
   paymentUrls.fromLinkHeaders = LinkHeader
     .parse(res.headers.get('link') || '')
     .rel('payment')
-    .map(rel => ({ url: new URL(rel.uri, targetUrl), title: pickTitle(rel) }));
+    .map(rel => ({
+      url: new URL(rel.uri, targetHref),
+      // Support extended attributes when they're successfully decoded by
+      // LinkHeader. Otherwise fall back to the title attribute. A null encoding
+      // indicates the header was properly decoded.
+      title: rel['title*'] && rel['title*'].encoding === null && rel['title*'].value || rel.title || ''
+    }));
 
-  if (!res.body) {
-    return paymentUrls;
+  if (res.body) {
+    await pipeline(res.body.setEncoding('utf8'), parse);
   }
-
-  res.body.setEncoding('utf8');
-
-  await pipeline(res.body, parse);
 
   return paymentUrls;
 }
