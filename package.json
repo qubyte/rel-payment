@@ -29,12 +29,12 @@
   "license": "MIT",
   "dependencies": {
     "http-link-header": "^1.0.5",
-    "node-fetch": "^3.2.6",
+    "node-fetch": "^3.2.10",
     "parse5-sax-parser": "^7.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.18.0",
+    "eslint": "^8.24.0",
     "eslint-config-qubyte": "^5.0.0",
-    "mocha": "^9.2.2"
+    "mocha": "^10.0.0"
   }
 }
