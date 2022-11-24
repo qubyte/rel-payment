@@ -1,7 +1,8 @@
-import assert from 'assert';
-import http from 'http';
-import https from 'https';
-import { readFileSync } from 'fs';
+import { strict as assert } from 'node:assert';
+import { describe, before, after, it } from 'node:test';
+import { createServer as createHttpServer } from 'node:http';
+import { createServer as createHttpsServer } from 'node:https';
+import { readFileSync } from 'node:fs';
 import relPayment from 'rel-payment';
 
 const safeKey = readFileSync(new URL('./safe-keypair/local.key', import.meta.url));
@@ -55,9 +56,9 @@ function handleRequest(req, res) {
   }
 }
 
-const httpServer = http.createServer(handleRequest);
-const safeHttpsServer = https.createServer(handleRequest, { key: safeKey, cert: safeCert });
-const unsafeHttpsServer = https.createServer(handleRequest, { key: unsafeKey, cert: unsafeCert });
+const httpServer = createHttpServer(handleRequest);
+const safeHttpsServer = createHttpsServer(handleRequest, { key: safeKey, cert: safeCert });
+const unsafeHttpsServer = createHttpsServer(handleRequest, { key: unsafeKey, cert: unsafeCert });
 
 const httpPort = 3000;
 const safeHttpsPort = 3001;
@@ -125,7 +126,7 @@ describe('rel-payment', () => {
   it('returns payment URLs for HTTP string URLs when configured to', async () => {
     const urls = await relPayment(`http://localhost:${httpPort}/headers-anchors-links`, { allowHttp: true });
 
-    assert.deepStrictEqual(urls, {
+    assert.deepEqual(urls, {
       fromLinkHeaders: [
         { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
         { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },
@@ -148,7 +149,7 @@ describe('rel-payment', () => {
     const url = new URL(`http://localhost:${httpPort}/headers-anchors-links`);
     const urls = await relPayment(url, { allowHttp: true });
 
-    assert.deepStrictEqual(urls, {
+    assert.deepEqual(urls, {
       fromLinkHeaders: [
         { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
         { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },
@@ -170,7 +171,7 @@ describe('rel-payment', () => {
   it.skip('returns payment URLs for HTTPS URLs', async () => {
     const urls = await relPayment(`https://localhost:${safeHttpsPort}/headers-anchors-links`);
 
-    assert.deepStrictEqual(urls, {
+    assert.deepEqual(urls, {
       fromLinkHeaders: [
         { url: new URL('https://example.com/payment-in-header-simple'), title: 'title-a' },
         { url: new URL('https://example.com/payment-in-header-unquoted-rel'), title: 'title-b' },

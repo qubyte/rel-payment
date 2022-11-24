@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v5.0.0
+
+- Drops support for Node 14. I'm trying to cut down the footprint of all my
+  packages to lower the dependency maintenance burden.
+
 ## v4.1.2
 
 - Fixes and adds back TypeScript declaration file.

@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 import LinkHeader from 'http-link-header';
 import { SAXParser } from 'parse5-sax-parser';
-import { promisify } from 'util';
-import { pipeline as pipelinecb } from 'stream';
+import { promisify } from 'node:util';
+import { pipeline as pipelinecb } from 'node:stream';
 
 const pipeline = promisify(pipelinecb);
 
