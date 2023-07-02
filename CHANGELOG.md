@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v6.0.0
+
+- Drops support for Node 16. As before, I'm cutting down the dependency
+  footprint to lower the maintenance burden.
+
 ## v5.0.0
 
 - Drops support for Node 14. I'm trying to cut down the footprint of all my

@@ -1,10 +1,6 @@
-import fetch from 'node-fetch';
 import LinkHeader from 'http-link-header';
 import { SAXParser } from 'parse5-sax-parser';
-import { promisify } from 'node:util';
-import { pipeline as pipelinecb } from 'node:stream';
-
-const pipeline = promisify(pipelinecb);
+import { pipeline } from 'node:stream/promises';
 
 export default async function discoverRelPaymentUrl(url, { allowHttp = false } = {}) {
   const paymentUrls = {
@@ -54,7 +50,7 @@ export default async function discoverRelPaymentUrl(url, { allowHttp = false } =
     }));
 
   if (res.body) {
-    await pipeline(res.body.setEncoding('utf8'), parse);
+    await pipeline(res.body, new TextDecoderStream(), parse);
   }
 
   return paymentUrls;

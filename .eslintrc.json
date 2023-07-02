@@ -1,6 +1,9 @@
 {
-  "extends": "qubyte/ES2020-module",
+  "extends": "qubyte/ES2022-module",
   "env": {
     "node": true
+  },
+  "globals": {
+    "TextDecoderStream": true
   }
 }
