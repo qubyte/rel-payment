@@ -32,7 +32,8 @@
     "parse5-sax-parser": "^7.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.44.0",
-    "eslint-config-qubyte": "^5.0.0"
+    "eslint": "^8.56.0",
+    "eslint-config-qubyte": "^6.0.0",
+    "globals": "^14.0.0"
   }
 }
