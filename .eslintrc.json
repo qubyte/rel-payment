@@ -1,6 +1,0 @@
-{
-  "extends": "qubyte/ES2020-module",
-  "env": {
-    "node": true
-  }
-}
