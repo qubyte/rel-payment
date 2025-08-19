@@ -1,3 +1,5 @@
+Moved to: https://codeberg.org/qubyte/rel-payment
+
 # rel-payment
 
 Discover [rel="payment"](http://microformats.org/wiki/rel-payment) donation
